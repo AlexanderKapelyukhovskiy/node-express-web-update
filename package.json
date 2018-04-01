@@ -2,6 +2,10 @@
   "name": "node-express-update",
   "version": "1.0.0",
   "main": "app.js",
+  "scripts": {
+    "start": "cross-env DEBUG=app nodemon app.js",
+    "lint": "eslint app.js"
+  },
   "license": "MIT",
   "dependencies": {
     "bootstrap": "3.3.7",
@@ -9,6 +13,22 @@
     "debug": "^3.1.0",
     "express": "^4.16.3",
     "jquery": "3.2.1",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "nodemon": "^1.17.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.4",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.10.0"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": ["node_modules/**/node_modules"],
+    "delay": 2500,
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 4000
+    }
   }
 }
