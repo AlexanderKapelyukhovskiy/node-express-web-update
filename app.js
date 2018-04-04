@@ -20,9 +20,12 @@ const navs = [
   { link: '/books', title: 'Books' },
   { link: '/authors', title: 'Authors' }];
 
-const booksRouter = require('./src/routes/bookRoutes');
+const booksRouter = require('./src/routes/bookRoutes')(navs);
+const adminRouter = require('./src/routes/adminRoutes')(navs);
 
-app.use('/books', booksRouter(navs));
+app.use('/books', booksRouter);
+app.use('/admin', adminRouter);
+
 
 app.get('/', (req, res) => {
   res.render('index', { navs, title: 'My Library' });
