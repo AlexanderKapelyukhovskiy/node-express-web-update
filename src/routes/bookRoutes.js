@@ -1,61 +1,18 @@
 const express = require('express');
-const debug = require('debug')('app:bookRoutes');
-const { MongoClient, ObjectID } = require('mongodb');
+
+const bookController = require('../controllers/bookController');
+const bookService = require('../services/goodreadsService');
 
 const routes = (nav) => {
+  const { getIndex, getBookById, middleware } = bookController(bookService, nav);
+
   const booksRouter = express.Router();
-  const url = 'mongodb://localhost:27017';
-  const dbName = 'libraryApp';
 
-  booksRouter.use((req, res, next) => {
-    if (req.user) {
-      next();
-    } else {
-      res.redirect('/');
-    }
-  });
+  booksRouter.use(middleware);
 
-  booksRouter.route('/')
-    .get((req, res) => {
-      (async function mongo() {
-        let client;
-        try {
-          client = await MongoClient.connect(url);
-          debug('Connected correctly to server');
-          const db = client.db(dbName);
+  booksRouter.route('/').get(getIndex);
 
-          const col = await db.collection('books');
-          const books = await col.find().toArray();
-
-          res.render('bookListView', { nav, title: 'Books', books });
-        } catch (error) {
-          debug(error.stack);
-        }
-        client.close();
-      }());
-    });
-
-  booksRouter.route('/:id')
-    .get((req, res) => {
-      const { id } = req.params;
-      (async function mongo() {
-        let client;
-        try {
-          client = await MongoClient.connect(url);
-          debug('Connected correctly to server');
-          const db = client.db(dbName);
-
-          const col = await db.collection('books');
-          const book = await col.findOne({ _id: new ObjectID(id) });
-          debug(book);
-
-          res.render('bookView', { nav, title: 'Book', book });
-        } catch (error) {
-          debug(error.stack);
-        }
-        client.close();
-      }());
-    });
+  booksRouter.route('/:id').get(getBookById);
 
   return booksRouter;
 };
