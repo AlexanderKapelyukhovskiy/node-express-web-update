@@ -7,6 +7,14 @@ const routes = (nav) => {
   const url = 'mongodb://localhost:27017';
   const dbName = 'libraryApp';
 
+  booksRouter.use((req, res, next) => {
+    if (req.user) {
+      next();
+    } else {
+      res.redirect('/');
+    }
+  });
+
   booksRouter.route('/')
     .get((req, res) => {
       (async function mongo() {
